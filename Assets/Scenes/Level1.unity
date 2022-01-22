@@ -134,9 +134,9 @@ GameObject:
   - component: {fileID: 321908259}
   - component: {fileID: 321908258}
   - component: {fileID: 321908257}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Square
-  m_TagString: Untagged
+  m_TagString: ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -376,10 +376,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 284bedcbb4d3c054ba89a06084c8b0d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  jump: 0
   moveSpeed: 25
   jumpForce: 10
-  downForce: 75
+  downwardDistance: 100
   dashDistance: 1500
   jumpKeyPressed: 0
   downwardStompPressed: 0
@@ -388,8 +387,15 @@ MonoBehaviour:
   downDash: 0
   Hold_JumpButton_Maximum_Wait_Time: 0.1
   Hold_Dash_Button_Maximum_Wait_Time: 0.1
-  inAir: 0
-  isGrounded: 0
+  maxdashCoolDownTime: 0
+  maxdownDashCoolDownTime: 0
+  initdashCoolDownTime: 0
+  initdownDashCoolDownTime: 0
+  raycastHitDistance: 1
+  grounded: 0
+  GroundedMask:
+    serializedVersion: 2
+    m_Bits: 64
 --- !u!1 &443925506
 GameObject:
   m_ObjectHideFlags: 0
@@ -401,6 +407,7 @@ GameObject:
   - component: {fileID: 443925509}
   - component: {fileID: 443925508}
   - component: {fileID: 443925507}
+  - component: {fileID: 443925510}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -473,3 +480,24 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &443925510
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 443925506}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b2faf203729c9b9408b4c6b52c20101c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  followTarget: {fileID: 341273146}
+  xOffset: 0
+  yOffset: 0
+  zOffSet: 1
+  xbound: 0
+  ybound: 0
+  xSpeed: 0.5
+  ySpeed: 0.5
+  turnCursorOn: 0

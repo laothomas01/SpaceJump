@@ -16,13 +16,11 @@ public class PlayerController : MonoBehaviour
      * -consider the direction the player is facing for movement purposes.
      */
     Rigidbody2D rb;
-    public bool jump;
     public float moveSpeed;
     public float jumpForce;
     private float horizontalMovement;
-    public float downForce;
+    public float downwardDistance;
     public float dashDistance;
-    private int direction;
     public bool jumpKeyPressed;
     public bool downwardStompPressed;
     public bool sideDashPressed;
@@ -31,12 +29,35 @@ public class PlayerController : MonoBehaviour
     float timeButtonHeld = 0;
     public float Hold_JumpButton_Maximum_Wait_Time;
     public float Hold_Dash_Button_Maximum_Wait_Time;
-    public bool inAir = false;
-    public bool isGrounded = false;
+
+
+    public float maxdashCoolDownTime;
+    public float maxdownDashCoolDownTime;
+    public float initdashCoolDownTime;
+    public float initdownDashCoolDownTime;
+
+    /*
+     * JUMP CHECKS
+     */
+    public static bool jump;
+    public static bool inAir;
+    public float raycastHitDistance = 1f;
+    /*
+     GROUND CHECKS 
+     
+     */
+    private RaycastHit2D hit;
+    public bool grounded = false;
+
+    [SerializeField] private LayerMask GroundedMask;
+
+
     Vector3 targetVelocity;
     Vector3 lastMoveDir;
     Vector3 downDirection;
-    KeyCode lastKeyCode;
+
+
+
     private void Start()
     {
 
@@ -45,10 +66,13 @@ public class PlayerController : MonoBehaviour
         jumpKeyPressed = false;
         downwardStompPressed = false;
         sideDashPressed = false;
+
     }
     private void Update()
     {
-        Debug.Log("TIME BUTTON HELD:" + timeButtonHeld);
+
+        //GroundCheck();
+
         if (Input.GetKey(KeyCode.J))
         {
 
@@ -74,7 +98,18 @@ public class PlayerController : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.K))
         {
-            downwardStompPressed = true;
+
+            timeButtonHeld += Time.deltaTime;
+
+            if (timeButtonHeld > Hold_JumpButton_Maximum_Wait_Time)
+            {
+                downwardStompPressed = false;
+            }
+
+            else
+            {
+                downwardStompPressed = true;
+            }
         }
         else if (Input.GetKeyUp(KeyCode.K))
         {
@@ -92,7 +127,7 @@ public class PlayerController : MonoBehaviour
 
 
 
-        if (Input.GetKey(KeyCode.L))
+        if (Input.GetKey(KeyCode.L) && horizontalMovement > 0 || Input.GetKey(KeyCode.L) && horizontalMovement < 0)
         {
             timeButtonHeld += Time.deltaTime;
             if (timeButtonHeld > Hold_Dash_Button_Maximum_Wait_Time)
@@ -105,6 +140,7 @@ public class PlayerController : MonoBehaviour
                 sideDash = true;
             }
         }
+
         else if (Input.GetKeyUp(KeyCode.L))
         {
             sideDash = false;
@@ -137,7 +173,15 @@ public class PlayerController : MonoBehaviour
     }
     private void Jump()
     {
-        rb.velocity = Vector2.up * jumpForce;
+        /*
+         ADD COOL DOWN TO THIS ABILITY
+        */
+        if (jump)
+        {
+
+            rb.velocity = Vector2.up * jumpForce;
+
+        }
 
     }
     private void Move()
@@ -147,38 +191,49 @@ public class PlayerController : MonoBehaviour
 
         rb.velocity = targetVelocity;
     }
+
+
+    /*
+     * GROUND CHECKING
+     */
+    private void GroundCheck()
+    {
+        hit = Physics2D.Raycast(transform.position, -transform.up, raycastHitDistance, GroundedMask);
+        Debug.DrawRay(transform.position, -transform.up * raycastHitDistance, Color.red);
+        grounded = hit ? true : false;
+    }
+
+    /*
+     * MOVEMENT ABILITIES
+     */
     private void DownwardDash()
     {
-
-        //rb.AddForce(Vector2.down * downForce, ForceMode2D.Impulse);
-        //transform.position += downDirection * downForce;
-
         /*
-         * Add a cool down here
-         */
-        rb.AddForce(Vector3.down * downForce, ForceMode2D.Force);
+        
+        ADD A COOL DOWN
+
+        */
+        rb.AddForce(Vector2.down * downwardDistance);
+
     }
     private void SideDash()
     {
-        //transform.position += lastMoveDir * dashDistance;
-        //rb.AddForce(new Vector2(10, 0) * dashDistance, ForceMode2D.Impulse);
-
-        //right movement
-
-
         /*
-         * Add a cool down here
+         * ADD A COOL DOWN
          */
-        if (horizontalMovement > 0)
+        if (horizontalMovement < 0)
         {
-            rb.AddForce(Vector2.right * dashDistance, ForceMode2D.Force);
+
+            rb.AddForce(Vector2.left * dashDistance);
         }
-        //left movement
-        else if (horizontalMovement < 0)
+        else
         {
-            rb.AddForce(new Vector2(-1, 0) * dashDistance, ForceMode2D.Force);
+            rb.AddForce(Vector2.right * dashDistance);
         }
+
     }
+
+
     private void OnDrawGizmos()
     {
         Gizmos.DrawWireSphere(lastMoveDir, 1);
