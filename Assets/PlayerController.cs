@@ -41,7 +41,7 @@ public class PlayerController : MonoBehaviour
      */
     public static bool jump;
     public static bool inAir;
-    public float raycastHitDistance = 1f;
+    //public float raycastHitDistance = 1f;
     /*
      GROUND CHECKS 
      
@@ -196,12 +196,12 @@ public class PlayerController : MonoBehaviour
     /*
      * GROUND CHECKING
      */
-    private void GroundCheck()
-    {
-        hit = Physics2D.Raycast(transform.position, -transform.up, raycastHitDistance, GroundedMask);
-        Debug.DrawRay(transform.position, -transform.up * raycastHitDistance, Color.red);
-        grounded = hit ? true : false;
-    }
+    //private void GroundCheck()
+    //{
+    //    hit = Physics2D.Raycast(transform.position, -transform.up, raycastHitDistance, GroundedMask);
+    //    Debug.DrawRay(transform.position, -transform.up * raycastHitDistance, Color.red);
+    //    grounded = hit ? true : false;
+    //}
 
     /*
      * MOVEMENT ABILITIES
